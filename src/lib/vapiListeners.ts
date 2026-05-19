@@ -1,6 +1,10 @@
 import type { VapiClient } from './vapiImport';
 import { bindDailyAudioFallback, noteVapiVolumeLevel, syncVapiRemoteAudio } from './vapiAudio';
 import { executeVapiTool } from './executeVapiTool';
+import {
+  onGoodbyeAssistantSpeechStarted,
+  onGoodbyeAssistantSpeechStopped,
+} from './sessionLifecycle';
 import { pushPhaseContextToVapi } from './syncPhaseToVapi';
 import { parseToolArguments } from './vapiTools';
 import { useSessionStore } from '../store/sessionStore';
@@ -27,13 +31,21 @@ function handleToolCalls(vapi: VapiClient, message: ToolCallMsg | FunctionCallMs
         ? [{ function: { name: message.functionCall.name, arguments: message.functionCall.parameters } }]
         : [];
 
+  const results: string[] = [];
+
   for (const call of calls) {
     const name = call.function?.name;
     if (!name) continue;
-    const result = executeVapiTool(name, parseToolArguments(call.function?.arguments));
+    results.push(executeVapiTool(name, parseToolArguments(call.function?.arguments)));
+  }
+
+  if (results.length > 0) {
     vapi.send({
       type: 'add-message',
-      message: { role: 'system', content: result },
+      message: {
+        role: 'system',
+        content: results.join('\n'),
+      },
       triggerResponseEnabled: true,
     });
   }
@@ -113,8 +125,10 @@ export function attachVapiListeners(vapi: VapiClient) {
         if (msg.status === 'started') {
           store().setParticipantSpeaking(false);
           store().setVoiceUi('speaking');
+          onGoodbyeAssistantSpeechStarted();
         } else if (msg.status === 'stopped') {
           store().setVoiceUi('listening');
+          onGoodbyeAssistantSpeechStopped();
         }
       }
     }

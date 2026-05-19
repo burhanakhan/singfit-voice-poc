@@ -100,7 +100,7 @@ export function executeVapiTool(name: string, args: Record<string, unknown>): st
       const improvement = String(args.improvement ?? 'shared').trim();
       s.addTranscript('nina', improvement);
       s.submitWrapUp();
-      return 'App will return home after goodbye. Thank Nina warmly and wish her well.';
+      return 'Phase is goodbye. Give a brief warm goodbye to Nina now. Do not say you are loading, waiting, or checking anything. The app will return home after you finish speaking.';
     }
 
     default:

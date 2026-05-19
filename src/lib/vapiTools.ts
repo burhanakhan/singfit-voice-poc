@@ -22,7 +22,7 @@ export type VapiToolName = (typeof VAPI_TOOL_NAMES)[keyof typeof VAPI_TOOL_NAMES
 export const VAPI_TOOL_DEFINITIONS: CreateFunctionToolDTO[] = [
   {
     type: 'function',
-    async: false,
+    async: true,
     function: {
       name: VAPI_TOOL_NAMES.setMood,
       description:
@@ -41,7 +41,7 @@ export const VAPI_TOOL_DEFINITIONS: CreateFunctionToolDTO[] = [
   },
   {
     type: 'function',
-    async: false,
+    async: true,
     function: {
       name: VAPI_TOOL_NAMES.showAiSongPick,
       description:
@@ -51,7 +51,7 @@ export const VAPI_TOOL_DEFINITIONS: CreateFunctionToolDTO[] = [
   },
   {
     type: 'function',
-    async: false,
+    async: true,
     function: {
       name: VAPI_TOOL_NAMES.showFavorites,
       description: 'Call when Nina wants to choose from her favorite songs list.',
@@ -60,7 +60,7 @@ export const VAPI_TOOL_DEFINITIONS: CreateFunctionToolDTO[] = [
   },
   {
     type: 'function',
-    async: false,
+    async: true,
     function: {
       name: VAPI_TOOL_NAMES.confirmOfferedSong,
       description: 'Call when Nina agrees to sing the song currently shown on the offer screen.',
@@ -69,7 +69,7 @@ export const VAPI_TOOL_DEFINITIONS: CreateFunctionToolDTO[] = [
   },
   {
     type: 'function',
-    async: false,
+    async: true,
     function: {
       name: VAPI_TOOL_NAMES.pickAnotherSong,
       description: 'Call when Nina wants a different AI song suggestion (stay on offer screen).',
@@ -78,7 +78,7 @@ export const VAPI_TOOL_DEFINITIONS: CreateFunctionToolDTO[] = [
   },
   {
     type: 'function',
-    async: false,
+    async: true,
     function: {
       name: VAPI_TOOL_NAMES.selectFavoriteSong,
       description: 'Call when Nina picks a song from her favorites list by title or position.',
@@ -96,7 +96,7 @@ export const VAPI_TOOL_DEFINITIONS: CreateFunctionToolDTO[] = [
   },
   {
     type: 'function',
-    async: false,
+    async: true,
     function: {
       name: VAPI_TOOL_NAMES.goBackToMusicChoice,
       description:
@@ -106,7 +106,7 @@ export const VAPI_TOOL_DEFINITIONS: CreateFunctionToolDTO[] = [
   },
   {
     type: 'function',
-    async: false,
+    async: true,
     function: {
       name: VAPI_TOOL_NAMES.completeSongFeedback,
       description: 'Call after Nina shares how she liked the song (song_feedback phase).',
@@ -115,7 +115,7 @@ export const VAPI_TOOL_DEFINITIONS: CreateFunctionToolDTO[] = [
   },
   {
     type: 'function',
-    async: false,
+    async: true,
     function: {
       name: VAPI_TOOL_NAMES.wantAnotherSong,
       description: 'Call when Nina wants to sing another song (continue_or_end phase).',
@@ -124,7 +124,7 @@ export const VAPI_TOOL_DEFINITIONS: CreateFunctionToolDTO[] = [
   },
   {
     type: 'function',
-    async: false,
+    async: true,
     function: {
       name: VAPI_TOOL_NAMES.doneForToday,
       description: 'Call when Nina is done for today (continue_or_end phase).',
@@ -133,7 +133,7 @@ export const VAPI_TOOL_DEFINITIONS: CreateFunctionToolDTO[] = [
   },
   {
     type: 'function',
-    async: false,
+    async: true,
     function: {
       name: VAPI_TOOL_NAMES.completeWrapUp,
       description:

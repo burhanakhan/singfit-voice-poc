@@ -7,3 +7,5 @@ dist
 # Internal commercial / pricing (if copied into web or parent Docs)
 **/SingFit_VoiceAI_Commercial_Options.md
 **/*Commercial_Options*
+
+.vercel

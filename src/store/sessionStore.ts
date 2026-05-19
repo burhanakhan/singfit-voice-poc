@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { pickFavoriteSongs, pickRandomSong } from '../data/songs';
-import { downloadTranscript, formatTime } from '../lib/transcript';
+import { finalizeSessionToHome } from '../lib/sessionLifecycle';
+import { formatTime } from '../lib/transcript';
 import type {
   ScreenId,
   SessionPhase,
@@ -102,24 +103,24 @@ export const useSessionStore = create<SessionState>((set, get) => ({
   },
 
   endSession: () => {
-    const s = get();
-    if (s.phase !== 'wrap_up' && s.phase !== 'goodbye') {
-      set({
-        screen: 'voice_hub',
-        phase: 'wrap_up',
-        currentSong: null,
-        offeredSong: null,
-        voiceUi: 'listening',
-      });
+    const { phase } = get();
+    if (phase === 'goodbye') {
       return;
     }
-    get().goHome();
+    if (phase === 'wrap_up') {
+      return;
+    }
+    set({
+      screen: 'voice_hub',
+      phase: 'wrap_up',
+      currentSong: null,
+      offeredSong: null,
+      voiceUi: 'listening',
+    });
   },
 
   goHome: () => {
-    const { transcript } = get();
-    if (transcript.length > 2) downloadTranscript(transcript);
-    set({ ...initial, screen: 'home', voiceUi: 'idle' });
+    finalizeSessionToHome();
   },
 
   setMoodAndAdvance: (note) => {
@@ -228,7 +229,10 @@ export const useSessionStore = create<SessionState>((set, get) => ({
   },
 
   submitWrapUp: () => {
-    set({ phase: 'goodbye', voiceUi: 'speaking' });
-    setTimeout(() => get().goHome(), 2500);
+    set({
+      phase: 'goodbye',
+      screen: 'voice_hub',
+      voiceUi: 'listening',
+    });
   },
 }));

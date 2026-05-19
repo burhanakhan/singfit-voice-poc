@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { bindDailyAudioFallback, getVapiAudioDiagnostics, syncVapiRemoteAudio } from '../lib/vapiAudio';
-import { destroySharedVapi, getSharedVapi, getVapiInstance } from '../lib/vapiClient';
+import { getSharedVapi, getVapiInstance } from '../lib/vapiClient';
 import { resetVapiTranscriptDedupe } from '../lib/vapiListeners';
 import {
   getVapiAssistantId,
@@ -77,7 +77,6 @@ export function useVapi() {
   }, [setVapiCallStatus]);
 
   const endCallAndGoHome = useCallback(() => {
-    destroySharedVapi();
     goHome();
   }, [goHome]);
 

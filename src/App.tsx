@@ -18,7 +18,7 @@ const EDEN_GREETING =
 
 function App() {
   const { screen, phase, vapiConnected } = useSessionStore();
-  const { startCall, endCallAndGoHome, configured } = useVapi();
+  const { startCall, configured } = useVapi();
 
   const prevNav = useRef<{ phase: SessionPhase; screen: ScreenId }>({ phase, screen });
 
@@ -68,9 +68,6 @@ function App() {
 
   const handleEndSession = () => {
     useSessionStore.getState().endSession();
-    if (useSessionStore.getState().screen === 'home') {
-      endCallAndGoHome();
-    }
   };
 
   return (

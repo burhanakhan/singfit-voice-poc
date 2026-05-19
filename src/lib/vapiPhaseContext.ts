@@ -59,7 +59,9 @@ export function buildPhaseContextMessage(input: {
       lines.push('Goal: ask mood improvement; then complete_wrap_up.');
       break;
     case 'goodbye':
-      lines.push('Goal: brief warm goodbye.');
+      lines.push(
+        'Goal: brief warm goodbye only. No filler phrases (no "one sec", "hold on", "let me check"). App ends session after you stop speaking.',
+      );
       break;
     default:
       break;
