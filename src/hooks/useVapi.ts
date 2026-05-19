@@ -2,15 +2,18 @@ import { useCallback } from 'react';
 import { bindDailyAudioFallback, getVapiAudioDiagnostics, syncVapiRemoteAudio } from '../lib/vapiAudio';
 import { destroySharedVapi, getSharedVapi, getVapiInstance } from '../lib/vapiClient';
 import { resetVapiTranscriptDedupe } from '../lib/vapiListeners';
+import {
+  getVapiAssistantId,
+  getVapiPublicKey,
+  isVapiConfigured,
+  vapiEnvInvalidReason,
+} from '../lib/vapiEnv';
 import { VAPI_TOOL_DEFINITIONS } from '../lib/vapiTools';
 import { useSessionStore } from '../store/sessionStore';
-import type { SessionPhase } from '../types/session';
-
-const publicKey = import.meta.env.VITE_VAPI_PUBLIC_KEY as string | undefined;
-const assistantId = import.meta.env.VITE_VAPI_ASSISTANT_ID as string | undefined;
+import { PHASE_HEADINGS, type SessionPhase } from '../types/session';
 
 export function vapiConfigured(): boolean {
-  return Boolean(publicKey && assistantId);
+  return isVapiConfigured();
 }
 
 export function useVapi() {
@@ -18,7 +21,17 @@ export function useVapi() {
   const setVapiCallStatus = useSessionStore((s) => s.setVapiCallStatus);
 
   const startCall = useCallback(async () => {
-    if (!publicKey || !assistantId) return;
+    const publicKey = getVapiPublicKey();
+    const assistantId = getVapiAssistantId();
+    if (!publicKey || !assistantId) {
+      const store = useSessionStore.getState();
+      const hint =
+        vapiEnvInvalidReason ??
+        'Missing VITE_VAPI_PUBLIC_KEY or VITE_VAPI_ASSISTANT_ID (set in Vercel and redeploy).';
+      store.setVapiCallStatus('error', hint);
+      store.addTranscript('system', `Voice error: ${hint}`);
+      return;
+    }
 
     const store = useSessionStore.getState();
     store.setVapiCallStatus('connecting');
@@ -34,7 +47,7 @@ export function useVapi() {
         variableValues: {
           participantName: 'Nina',
           phase: store.phase,
-          phaseHeading: store.phase,
+          phaseHeading: PHASE_HEADINGS[store.phase],
         },
         'tools:append': [...VAPI_TOOL_DEFINITIONS],
       });

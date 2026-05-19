@@ -97,5 +97,6 @@ The app runs in **tap-through mode**: all screens and MP3 playback work. Add `?d
 |-------|-----|
 | No mic | HTTPS required (Vercel gives HTTPS); check browser permission |
 | Voice not connecting | Verify `VITE_*` in Vercel env and redeploy |
+| `non ISO-8859-1 code point` in headers | Re-paste env values: **UUID only**, no smart quotes, no spaces, no `KEY=value` in the value field |
 | High latency | Smaller/faster model; turbo TTS; wired network; close heavy tabs |
 | Songs 404 | Ensure `public/songs/*.mp3` were committed or copied before build |
