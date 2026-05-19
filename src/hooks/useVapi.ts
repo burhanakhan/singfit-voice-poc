@@ -1,0 +1,100 @@
+import { useCallback } from 'react';
+import { bindDailyAudioFallback, getVapiAudioDiagnostics, syncVapiRemoteAudio } from '../lib/vapiAudio';
+import { destroySharedVapi, getSharedVapi, getVapiInstance } from '../lib/vapiClient';
+import { resetVapiTranscriptDedupe } from '../lib/vapiListeners';
+import { VAPI_TOOL_DEFINITIONS } from '../lib/vapiTools';
+import { useSessionStore } from '../store/sessionStore';
+import type { SessionPhase } from '../types/session';
+
+const publicKey = import.meta.env.VITE_VAPI_PUBLIC_KEY as string | undefined;
+const assistantId = import.meta.env.VITE_VAPI_ASSISTANT_ID as string | undefined;
+
+export function vapiConfigured(): boolean {
+  return Boolean(publicKey && assistantId);
+}
+
+export function useVapi() {
+  const goHome = useSessionStore((s) => s.goHome);
+  const setVapiCallStatus = useSessionStore((s) => s.setVapiCallStatus);
+
+  const startCall = useCallback(async () => {
+    if (!publicKey || !assistantId) return;
+
+    const store = useSessionStore.getState();
+    store.setVapiCallStatus('connecting');
+    store.setVoiceUi('thinking');
+    resetVapiTranscriptDedupe();
+
+    const vapi = getSharedVapi(publicKey);
+
+    try {
+      // Client-side tools (no server URL) — injected here because Vapi's Tools Library
+      // targets backend integrations; deprecated "Custom Functions" matched our POC needs.
+      const call = await vapi.start(assistantId, {
+        variableValues: {
+          participantName: 'Nina',
+          phase: store.phase,
+          phaseHeading: store.phase,
+        },
+        'tools:append': [...VAPI_TOOL_DEFINITIONS],
+      });
+
+      if (!call) {
+        store.setVapiCallStatus('error', 'Vapi returned no call — check assistant ID and publish status');
+        store.setVoiceUi('listening');
+        store.addTranscript('system', 'Voice error: call did not start. Check Eden is published in Vapi.');
+        return;
+      }
+
+      bindDailyAudioFallback(vapi);
+      void syncVapiRemoteAudio(vapi);
+      window.setTimeout(() => void syncVapiRemoteAudio(vapi), 600);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      console.error('Vapi start failed', e);
+      store.setVapiCallStatus('error', msg);
+      store.setVoiceUi('listening');
+      store.addTranscript('system', `Voice error: ${msg}`);
+    }
+  }, [setVapiCallStatus]);
+
+  const stopCall = useCallback(() => {
+    void getVapiInstance()?.stop();
+    useSessionStore.getState().setVapiCallStatus('idle');
+  }, [setVapiCallStatus]);
+
+  const endCallAndGoHome = useCallback(() => {
+    destroySharedVapi();
+    goHome();
+  }, [goHome]);
+
+  const sendPhaseHint = useCallback((p: SessionPhase) => {
+    const vapi = getVapiInstance();
+    if (!vapi) return;
+    vapi.send({
+      type: 'add-message',
+      message: {
+        role: 'system',
+        content: `[PHASE: ${p}] Follow the flow spec for this phase.`,
+      },
+      triggerResponseEnabled: false,
+    });
+  }, []);
+
+  const unlockAudio = useCallback(async () => {
+    const vapi = getVapiInstance();
+    if (!vapi) return getVapiAudioDiagnostics();
+    bindDailyAudioFallback(vapi);
+    return syncVapiRemoteAudio(vapi);
+  }, []);
+
+  return {
+    startCall,
+    stopCall,
+    endCallAndGoHome,
+    sendPhaseHint,
+    unlockAudio,
+    getAudioDiagnostics: getVapiAudioDiagnostics,
+    configured: vapiConfigured(),
+  };
+}

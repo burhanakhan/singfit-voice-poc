@@ -1,0 +1,127 @@
+[
+  {
+    "type": "function",
+    "async": false,
+    "function": {
+      "name": "set_mood",
+      "description": "Call when Nina has shared how she is feeling (mood_check). Empathize in speech first, then call this to advance the app to music choice.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "moodSummary": {
+            "type": "string",
+            "description": "Brief summary of how Nina said she feels, in her words."
+          }
+        },
+        "required": ["moodSummary"]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "async": false,
+    "function": {
+      "name": "show_ai_song_pick",
+      "description": "Call when Nina wants you (Eden) to pick a song for her. Shows a song recommendation screen.",
+      "parameters": { "type": "object", "properties": {} }
+    }
+  },
+  {
+    "type": "function",
+    "async": false,
+    "function": {
+      "name": "show_favorites",
+      "description": "Call when Nina wants to choose from her favorite songs list.",
+      "parameters": { "type": "object", "properties": {} }
+    }
+  },
+  {
+    "type": "function",
+    "async": false,
+    "function": {
+      "name": "confirm_offered_song",
+      "description": "Call when Nina agrees to sing the song currently shown on the offer screen.",
+      "parameters": { "type": "object", "properties": {} }
+    }
+  },
+  {
+    "type": "function",
+    "async": false,
+    "function": {
+      "name": "pick_another_song",
+      "description": "Call when Nina wants a different AI song suggestion (stay on offer screen).",
+      "parameters": { "type": "object", "properties": {} }
+    }
+  },
+  {
+    "type": "function",
+    "async": false,
+    "function": {
+      "name": "select_favorite_song",
+      "description": "Call when Nina picks a song from her favorites list by title or position.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "songTitle": { "type": "string", "description": "Title Nina said, if any." },
+          "listIndex": {
+            "type": "number",
+            "description": "1-based position in the favorites list (first song = 1)."
+          }
+        }
+      }
+    }
+  },
+  {
+    "type": "function",
+    "async": false,
+    "function": {
+      "name": "go_back_to_music_choice",
+      "description": "Call when Nina wants to go back, start over, or choose differently from offer, favorites, or player.",
+      "parameters": { "type": "object", "properties": {} }
+    }
+  },
+  {
+    "type": "function",
+    "async": false,
+    "function": {
+      "name": "complete_song_feedback",
+      "description": "Call after Nina shares how she liked the song (song_feedback phase).",
+      "parameters": { "type": "object", "properties": {} }
+    }
+  },
+  {
+    "type": "function",
+    "async": false,
+    "function": {
+      "name": "want_another_song",
+      "description": "Call when Nina wants to sing another song (continue_or_end phase).",
+      "parameters": { "type": "object", "properties": {} }
+    }
+  },
+  {
+    "type": "function",
+    "async": false,
+    "function": {
+      "name": "done_for_today",
+      "description": "Call when Nina is done for today (continue_or_end phase).",
+      "parameters": { "type": "object", "properties": {} }
+    }
+  },
+  {
+    "type": "function",
+    "async": false,
+    "function": {
+      "name": "complete_wrap_up",
+      "description": "Call after Nina answers whether her mood improved (wrap_up phase). Then say goodbye warmly.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "improvement": {
+            "type": "string",
+            "description": "a little | a lot | not at all | paraphrase of her answer"
+          }
+        }
+      }
+    }
+  }
+]

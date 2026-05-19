@@ -1,0 +1,110 @@
+.voice-hub {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--sf-voice-bg);
+  min-height: 0;
+}
+
+.voice-hub-orb {
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 10px 0 6px;
+  overflow: hidden;
+}
+
+.voice-hub-panel {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--sf-voice-bg);
+  overflow: hidden;
+}
+
+.voice-hub-panel .transcript-panel {
+  flex: 1 1 0;
+  min-height: 88px;
+  max-height: min(240px, 38dvh);
+  margin-bottom: 4px;
+}
+
+.voice-hub-actions {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  padding: 6px 10px 10px;
+}
+
+.end-session-btn {
+  display: inline-block;
+  width: auto;
+  min-width: 0;
+  margin: 0;
+  padding: 7px 18px;
+  border: none;
+  border-radius: 999px;
+  background: var(--sf-red-bar);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.end-session-btn:hover {
+  filter: brightness(1.08);
+}
+
+.voice-hub-eden-slot {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  padding: 11px 16px 13px;
+  background: var(--sf-eden-bar-bg);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 -4px 14px rgba(0, 0, 0, 0.28);
+  color: var(--sf-listening);
+  font-size: 0.9rem;
+  font-weight: 400;
+}
+
+.voice-hub-eden-slot__icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: transparent;
+  border: 2px solid var(--sf-listening-ring);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  color: var(--sf-listening);
+  overflow: visible;
+}
+
+.voice-hub[data-voice-ui='speaking'] .voice-hub-eden-slot__icon,
+.voice-hub[data-voice-ui='thinking'] .voice-hub-eden-slot__icon {
+  color: #fff;
+}
+
+.voice-hub[data-voice-ui='speaking'] .voice-hub-eden-slot {
+  color: var(--sf-speaking);
+}
+
+.voice-hub[data-voice-ui='speaking'] .voice-hub-eden-slot__icon {
+  border-color: var(--sf-speaking-ring);
+  color: var(--sf-speaking);
+}
+
+.voice-hub[data-voice-ui='thinking'] .voice-hub-eden-slot {
+  color: var(--sf-thinking);
+}
+
+.voice-hub[data-voice-ui='thinking'] .voice-hub-eden-slot__icon {
+  border-color: var(--sf-thinking-ring);
+  color: var(--sf-thinking);
+}

@@ -1,0 +1,146 @@
+.song-screen {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 24px calc(var(--sf-eden-slot-height, 52px) + 16px);
+  text-align: center;
+  min-height: 0;
+}
+
+.song-screen-kicker {
+  margin: 0 0 12px;
+  font-size: 1rem;
+  line-height: 1.35;
+  max-width: 300px;
+  white-space: pre-line;
+}
+
+.song-screen-title {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--sf-brown);
+}
+
+.song-screen-artist {
+  margin: 8px 0 32px;
+  font-size: 0.95rem;
+  color: var(--sf-brown);
+}
+
+.song-screen-artist-by {
+  font-weight: 400;
+}
+
+.song-screen-artist-name {
+  font-weight: 600;
+}
+
+.btn-primary,
+.btn-secondary {
+  width: 100%;
+  max-width: 300px;
+  padding: 16px 24px;
+  border: none;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 12px;
+  color: #fff;
+}
+
+.btn-primary,
+.btn-secondary {
+  background: var(--sf-teal);
+}
+
+.btn-secondary:hover {
+  filter: brightness(0.96);
+}
+
+.btn-primary:hover {
+  filter: brightness(1.06);
+}
+
+.btn-link {
+  margin-top: 16px;
+  border: none;
+  background: none;
+  color: var(--sf-teal);
+  font-size: 0.9rem;
+}
+
+.favorites-screen {
+  align-items: stretch;
+  text-align: left;
+  padding: 0 0 calc(var(--sf-eden-slot-height, 52px) + 16px);
+  background: #f2f2f2;
+}
+
+.fav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.fav-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border: none;
+  border-bottom: 1px solid #ddd;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.fav-row:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.fav-row__text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  flex: 1;
+}
+
+.fav-row__title {
+  display: block;
+  font-size: 1.02rem;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--sf-brown);
+}
+
+.fav-row__style {
+  display: block;
+  font-size: 0.76rem;
+  font-weight: 400;
+  line-height: 1.15;
+  color: var(--sf-brown);
+}
+
+.fav-play {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: block;
+  object-fit: contain;
+}
+
+.fav-back {
+  align-self: center;
+  margin-top: 12px;
+  margin-bottom: 4px;
+}

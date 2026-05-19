@@ -1,0 +1,150 @@
+.voice-orb-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4px 12px 0;
+}
+
+.voice-orb-stage {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.voice-orb-rings {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.voice-orb-ring-pulse {
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  opacity: 0;
+  animation: voice-edge-pulse 2.6s ease-out infinite;
+}
+
+.voice-orb {
+  position: relative;
+  z-index: 1;
+  width: 108px;
+  height: 108px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  box-shadow: 0 0 28px rgba(0, 0, 0, 0.4);
+  opacity: 0.92;
+}
+
+.voice-orb-eden {
+  margin: 2px 0 2px;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-align: center;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+}
+
+.voice-orb--speaking {
+  background: var(--sf-speaking);
+  animation: glow-speak 1.5s ease-in-out infinite;
+}
+
+.voice-orb--listening {
+  background: var(--sf-listening);
+}
+
+.voice-orb--thinking {
+  background: var(--sf-thinking);
+}
+
+.voice-orb--idle {
+  background: #555;
+}
+
+.voice-orb-mic {
+  display: block;
+  flex-shrink: 0;
+  color: #fff;
+}
+
+.voice-duplex-mic {
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.voice-orb-activity {
+  margin: 6px 0 0;
+  font-size: 0.82rem;
+  font-style: italic;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.voice-duplex {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 14px 0 0;
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.55);
+  animation: duplex-pulse 2.4s ease-in-out infinite;
+}
+
+.voice-duplex span {
+  line-height: 1.2;
+}
+
+.voice-duplex--interrupt::before {
+  content: '💬';
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+@keyframes voice-edge-pulse {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.5;
+  }
+  70% {
+    opacity: 0.12;
+  }
+  100% {
+    transform: scale(1.14);
+    opacity: 0;
+  }
+}
+
+@keyframes glow-speak {
+  0%, 100% { box-shadow: 0 0 20px rgba(94, 184, 212, 0.5); }
+  50% { box-shadow: 0 0 36px rgba(94, 184, 212, 0.85); }
+}
+
+@keyframes duplex-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  33% {
+    transform: scale(1.06);
+    opacity: 1;
+  }
+  66% {
+    transform: scale(0.96);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+}

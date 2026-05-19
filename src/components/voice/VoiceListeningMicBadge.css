@@ -1,0 +1,108 @@
+.voice-listen-badge {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: inherit;
+  overflow: visible;
+}
+
+.voice-listen-badge__arcs {
+  position: absolute;
+  inset: 0;
+  display: block;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.voice-listen-badge__arc {
+  fill: none;
+  stroke: currentColor;
+  transform-origin: 24px 24px;
+}
+
+/* Outer rings — pulse inward but stop ~12.5px from center (mic edge) */
+.voice-listen-badge__arc--outer {
+  stroke-width: 1.85;
+  stroke-dasharray: 30 90;
+  --listen-arc-rotate: -30deg;
+  animation: listen-badge-arc-outer 2s ease-in-out infinite;
+}
+
+.voice-listen-badge__arc--mid {
+  stroke-width: 1.65;
+  stroke-dasharray: 24 76;
+  --listen-arc-rotate: 55deg;
+  animation: listen-badge-arc-mid 2s ease-in-out infinite;
+  animation-delay: 0.28s;
+}
+
+/* Fixed at mic boundary — glow only, no scale (never covers mic) */
+.voice-listen-badge__arc--edge {
+  stroke-width: 1.45;
+  stroke-dasharray: 18 61;
+  --listen-arc-rotate: 140deg;
+  animation: listen-badge-arc-edge 2s ease-in-out infinite;
+  animation-delay: 0.55s;
+}
+
+.voice-listen-badge--md .voice-listen-badge__arc--outer {
+  stroke-width: 2.2;
+  stroke-dasharray: 36 104;
+}
+
+.voice-listen-badge--md .voice-listen-badge__arc--mid {
+  stroke-width: 2;
+  stroke-dasharray: 28 88;
+}
+
+.voice-listen-badge--md .voice-listen-badge__arc--edge {
+  stroke-width: 1.75;
+  stroke-dasharray: 22 68;
+}
+
+.voice-listen-badge__mic {
+  position: relative;
+  z-index: 2;
+  display: block;
+  filter: drop-shadow(0 0 1.5px rgba(26, 19, 17, 0.85));
+}
+
+/* r=19 → min effective ~15.5 (19×0.82) */
+@keyframes listen-badge-arc-outer {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: rotate(var(--listen-arc-rotate)) scale(1.12);
+  }
+  50% {
+    opacity: 0.95;
+    transform: rotate(calc(var(--listen-arc-rotate) + 12deg)) scale(0.82);
+  }
+}
+
+/* r=16 → min effective ~13.3 (16×0.84) */
+@keyframes listen-badge-arc-mid {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: rotate(var(--listen-arc-rotate)) scale(1.08);
+  }
+  50% {
+    opacity: 0.9;
+    transform: rotate(calc(var(--listen-arc-rotate) + 10deg)) scale(0.84);
+  }
+}
+
+@keyframes listen-badge-arc-edge {
+  0%,
+  100% {
+    opacity: 0.28;
+    transform: rotate(var(--listen-arc-rotate)) scale(1);
+  }
+  50% {
+    opacity: 0.75;
+    transform: rotate(calc(var(--listen-arc-rotate) + 8deg)) scale(1);
+  }
+}

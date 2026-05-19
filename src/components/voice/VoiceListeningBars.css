@@ -1,0 +1,135 @@
+.voice-listening-bars {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+}
+
+.voice-listening-bars--sm {
+  gap: 2px;
+  height: 14px;
+}
+
+.voice-listening-bars--md {
+  gap: 3px;
+  height: 28px;
+}
+
+.voice-listening-bars span {
+  display: block;
+  border-radius: 999px;
+  background: currentColor;
+  transform-origin: center center;
+  animation: speech-detect-pulse ease-in-out infinite;
+}
+
+.voice-listening-bars--sm span {
+  width: 2px;
+}
+
+.voice-listening-bars--md span {
+  width: 4px;
+}
+
+/* Symmetric waveform — tallest in the center (speech / VAD style) */
+.voice-listening-bars--sm span:nth-child(1) {
+  height: 30%;
+  animation-duration: 0.9s;
+  animation-delay: 0.1s;
+}
+
+.voice-listening-bars--sm span:nth-child(2) {
+  height: 55%;
+  animation-duration: 0.78s;
+  animation-delay: 0.25s;
+}
+
+.voice-listening-bars--sm span:nth-child(3) {
+  height: 100%;
+  animation-duration: 0.7s;
+  animation-delay: 0.05s;
+}
+
+.voice-listening-bars--sm span:nth-child(4) {
+  height: 55%;
+  animation-duration: 0.82s;
+  animation-delay: 0.2s;
+}
+
+.voice-listening-bars--sm span:nth-child(5) {
+  height: 30%;
+  animation-duration: 0.88s;
+  animation-delay: 0.14s;
+}
+
+.voice-listening-bars--md span:nth-child(1) {
+  height: 22%;
+  animation-duration: 0.95s;
+  animation-delay: 0.12s;
+}
+
+.voice-listening-bars--md span:nth-child(2) {
+  height: 40%;
+  animation-duration: 0.82s;
+  animation-delay: 0.28s;
+}
+
+.voice-listening-bars--md span:nth-child(3) {
+  height: 62%;
+  animation-duration: 0.76s;
+  animation-delay: 0.08s;
+}
+
+.voice-listening-bars--md span:nth-child(4) {
+  height: 100%;
+  animation-duration: 0.68s;
+  animation-delay: 0.04s;
+}
+
+.voice-listening-bars--md span:nth-child(5) {
+  height: 62%;
+  animation-duration: 0.8s;
+  animation-delay: 0.24s;
+}
+
+.voice-listening-bars--md span:nth-child(6) {
+  height: 40%;
+  animation-duration: 0.84s;
+  animation-delay: 0.2s;
+}
+
+.voice-listening-bars--md span:nth-child(7) {
+  height: 22%;
+  animation-duration: 0.92s;
+  animation-delay: 0.16s;
+}
+
+/* Center bar — strongest voice pickup */
+.voice-listening-bars--sm span:nth-child(3),
+.voice-listening-bars--md span:nth-child(4) {
+  animation-name: speech-detect-pulse-strong;
+}
+
+@keyframes speech-detect-pulse {
+  0%,
+  100% {
+    transform: scaleY(0.35);
+    opacity: 0.55;
+  }
+  50% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+@keyframes speech-detect-pulse-strong {
+  0%,
+  100% {
+    transform: scaleY(0.25);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}

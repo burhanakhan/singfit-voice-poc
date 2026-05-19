@@ -1,0 +1,30 @@
+.app-desktop {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 28px;
+  width: 100%;
+}
+
+.app-phone {
+  position: relative;
+  width: 100%;
+  max-width: var(--phone-width);
+  height: calc(100dvh - 40px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  max-height: 900px;
+  min-height: min(640px, calc(100dvh - 40px));
+  background: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.35);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.app-phone .app-shell {
+  flex: 1;
+  min-height: 0;
+}
