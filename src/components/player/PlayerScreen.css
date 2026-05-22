@@ -337,15 +337,23 @@
   padding: 0 2px;
 }
 
+.player-sing-hint {
+  margin: 4px 8px 2px;
+  font-size: 0.62rem;
+  line-height: 1.2;
+  color: #8a5a4a;
+  text-align: center;
+}
+
 .player-back {
   display: block;
   flex-shrink: 0;
-  margin: 10px auto 0;
+  margin: 6px auto 0;
   padding: 0 0 2px;
   border: none;
   background: none;
   color: var(--sf-teal);
-  font-size: 0.9rem;
+  font-size: 0.78rem;
   cursor: pointer;
 }
 

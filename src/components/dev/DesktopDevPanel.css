@@ -1,10 +1,12 @@
 .desktop-dev-panel {
-  width: 280px;
-  flex-shrink: 0;
+  flex: 0 0 var(--app-column-width, var(--phone-width));
+  width: var(--app-column-width, var(--phone-width));
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   gap: 16px;
   padding-top: 8px;
+  box-sizing: border-box;
 }
 
 .desktop-dev-card {
@@ -18,40 +20,43 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
-.desktop-dev-card--setup {
-  background: #fff8e6;
+.desktop-dev-card--tools {
+  background: #f5f5f5;
+  border-color: #ccc;
+}
+
+.desktop-dev-card--debug-log {
+  background: #f0f4ff;
+  border-color: #a8b8ff;
+}
+
+.desktop-dev-inline-btn {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #fff;
+  color: #333;
+  font-size: 0.74rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.desktop-dev-inline-btn:hover {
+  background: #f4f6ff;
+  border-color: #a8b8ff;
+}
+
+.dev-help--setup {
+  margin-top: 10px;
   border-color: #e6c200;
-}
-
-.desktop-dev-card--ready {
-  background: #eef8f0;
-  border-color: #9ccc9c;
-}
-
-.desktop-dev-card--ready .desktop-dev-card__title {
-  color: #2d5a34;
-}
-
-.desktop-dev-card__title {
-  margin: 0 0 10px;
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: #664d03;
-}
-
-.desktop-dev-card p {
-  margin: 0 0 8px;
-}
-
-.desktop-dev-card code {
-  font-size: 0.72rem;
-  background: rgba(0, 0, 0, 0.06);
-  padding: 1px 4px;
-  border-radius: 3px;
+  background: #fffef8;
 }
 
 .desktop-dev-env {
-  margin: 0 0 10px;
+  margin: 8px 0 0;
   padding: 10px;
   background: rgba(0, 0, 0, 0.05);
   border-radius: 6px;
@@ -60,82 +65,9 @@
   overflow-x: auto;
 }
 
-.desktop-dev-muted {
-  color: #666;
-  font-size: 0.75rem;
-}
-
-.desktop-dev-status {
-  margin: 8px 0 0;
-  font-size: 0.78rem;
-}
-
-.desktop-dev-status--connected {
-  color: #2d5a34;
-}
-
-.desktop-dev-status--connecting {
-  color: #664d03;
-}
-
-.desktop-dev-status--error {
-  color: #9b2c2c;
-}
-
-.desktop-dev-error {
-  margin: 6px 0 0;
-  font-size: 0.72rem;
-  color: #9b2c2c;
-  word-break: break-word;
-}
-
-.desktop-dev-audio-btn {
-  display: block;
-  width: 100%;
-  margin-top: 10px;
-  padding: 8px 10px;
-  border: 1px solid #9ccc9c;
-  border-radius: 8px;
-  background: #fff;
-  color: #2d5a34;
-  font-size: 0.78rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.desktop-dev-audio-btn:hover {
-  background: #f4fff6;
-}
-
-.desktop-dev-diag {
-  margin: 10px 0 0;
-  padding: 8px;
-  max-height: 160px;
-  overflow: auto;
-  font-size: 0.65rem;
-  line-height: 1.35;
-  background: rgba(0, 0, 0, 0.05);
-  border-radius: 6px;
-}
-
-.desktop-dev-card .flow-dev {
-  margin: 0;
-  color: #444;
-}
-
-.desktop-dev-card .flow-dev summary {
-  font-weight: 600;
-  color: #222;
-}
-
-.desktop-dev-card .flow-dev-grid button {
-  border-color: #ccc;
-  background: #fff;
-  color: #222;
-}
-
-@media (max-width: 720px) {
+@media (max-width: 859px) {
   .desktop-dev-panel {
+    flex: 1 1 100%;
     width: 100%;
     max-width: var(--phone-width);
     padding-top: 0;

@@ -92,9 +92,9 @@
 .fav-row {
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   padding: 6px 16px;
   border: none;
   border-bottom: 1px solid #ddd;
@@ -143,4 +143,13 @@
   align-self: center;
   margin-top: 12px;
   margin-bottom: 4px;
+}
+
+.song-screen-voice-hint {
+  margin: 16px 0 0;
+  max-width: 300px;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: var(--sf-brown);
+  opacity: 0.85;
 }

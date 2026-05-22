@@ -1,8 +1,14 @@
-# Vapi assistant: Eden (paste into dashboard)
+# Vapi assistant: Eden (reference)
 
+**Start here (short):** [`VAPI_SETUP_5MIN.md`](./VAPI_SETUP_5MIN.md) — what you must click in Vapi + `.env`.
 
+The web app **overrides** timeouts, system prompt, tools, and client messages on every call (`src/lib/vapiCallOverrides.ts`, `src/lib/edenPrompt.ts`). The dashboard is mainly: **voice**, **publish**, **IDs in `.env`**.
 
-Configure at [https://dashboard.vapi.ai](https://dashboard.vapi.ai). The web app drives **screens** via **client-side tools** (no server URL on tools).
+Configure at [https://dashboard.vapi.ai](https://dashboard.vapi.ai). Screens change via **client-side tools** (no server URL on tools).
+
+## Troubleshooting logs (standard location)
+
+After each voice test, put exports in **`Docs/debug/`** (see `Docs/debug/README.md`): voice debug JSON, session transcript `.txt`, Vapi `call-logs-*.json`, and optional audio. Agents use the newest files there for diagnosis.
 
 
 
@@ -84,7 +90,7 @@ TOOLS (critical):
 
 - Call show_ai_song_pick when she wants you to choose a song.
 
-- Call show_favorites when she wants her favorite songs list.
+- Call show_favorites when she wants her favorite songs list. After the tool runs, the favorites screen shows numbers 1..N: read every title and style aloud in that order (do not skip songs), then ask her to choose by title or by on-screen number.
 
 - On song offer: confirm_offered_song or pick_another_song.
 
@@ -218,6 +224,8 @@ Restart `npm run dev` after changing `.env`.
 
 
 
-Leave `.env` empty. Open the app with `?debug=true` for tap-through flow controls and the dev-only voice banner.
+Leave `.env` empty for UI-only testing (tap-through flows).
+
+To show the **dev panel** (flow controls, voice debug log), set `VITE_DEBUG_SECRET` in `.env` to a random string (**12+ characters**), redeploy/restart dev, then open the app with `?sfdbg=<that-secret>`. Anyone with the deployed JS could extract the secret, so avoid sharing screenshots or URLs that include the full query string.
 
 

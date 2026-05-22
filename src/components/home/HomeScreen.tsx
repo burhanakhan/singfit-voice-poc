@@ -1,4 +1,8 @@
-﻿import { SessionMicIcon } from './SessionMicIcon';
+import { useEffect } from 'react';
+import { getVapiPublicKey, isVapiConfigured } from '../../lib/vapiEnv';
+import { getSharedVapi } from '../../lib/vapiClient';
+import { preflightMicrophoneAccess } from '../../lib/vapiMic';
+import { SessionMicIcon } from './SessionMicIcon';
 import './HomeScreen.css';
 
 type Props = { onStart: () => void };
@@ -11,6 +15,14 @@ const TILES = [
 ] as const;
 
 export function HomeScreen({ onStart }: Props) {
+  useEffect(() => {
+    void preflightMicrophoneAccess();
+    const key = getVapiPublicKey();
+    if (isVapiConfigured() && key) {
+      getSharedVapi(key);
+    }
+  }, []);
+
   return (
     <div className="home">
       <div className="home-stack">

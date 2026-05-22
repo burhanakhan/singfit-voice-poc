@@ -29,8 +29,24 @@ export class ErrorBoundary extends Component<Props, State> {
           <h1 style={{ fontSize: '1.1rem' }}>Something went wrong</h1>
           <p style={{ fontSize: '0.9rem' }}>{this.state.error.message}</p>
           <p style={{ fontSize: '0.85rem', color: '#666' }}>
-            Check the browser console (F12), then hard-refresh the page (Ctrl+Shift+R).
+            Check the browser console (F12), then reload the app.
           </p>
+          <button
+            type="button"
+            style={{
+              marginTop: 16,
+              padding: '10px 18px',
+              borderRadius: 8,
+              border: 'none',
+              background: '#2d8a7e',
+              color: '#fff',
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
+            onClick={() => window.location.reload()}
+          >
+            Reload app
+          </button>
         </div>
       );
     }

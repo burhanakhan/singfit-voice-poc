@@ -1,15 +1,16 @@
 import { songOfferKickerForOfferIndex } from '../../lib/songOfferCopy';
+import { SONG_OFFER_VOICE_HINT } from '../../lib/voiceCommands';
 import { useSessionStore } from '../../store/sessionStore';
 import { VoiceFooter } from '../voice/VoiceFooter';
 import './SongScreens.css';
 
 export function SongOfferScreen() {
-  const { offeredSong, offeredHistory, confirmOfferedSong, offerAnotherSong, goBackToMusicChoice } =
+  const { offeredSong, offerKickerIndex, confirmOfferedSong, offerAnotherSong, goBackToMusicChoice } =
     useSessionStore();
 
   if (!offeredSong) return null;
 
-  const offerIndex = Math.max(0, offeredHistory.length - 1);
+  const offerIndex = offerKickerIndex;
 
   return (
     <div className="song-screen">
@@ -28,6 +29,9 @@ export function SongOfferScreen() {
       <button type="button" className="btn-link" onClick={goBackToMusicChoice}>
         ← Back to Eden
       </button>
+      <p className="song-screen-voice-hint" role="status">
+        {SONG_OFFER_VOICE_HINT}
+      </p>
       <VoiceFooter />
     </div>
   );

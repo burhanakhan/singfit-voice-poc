@@ -50,3 +50,61 @@
   border-color: var(--sf-thinking-ring);
   color: #fff;
 }
+
+.voice-footer--reconnect {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--sf-eden-slot-height, 52px) + env(safe-area-inset-bottom, 0px));
+  min-height: auto;
+  padding: 10px 14px;
+  background: rgba(30, 20, 0, 0.92);
+  color: #ffecb3;
+  font-size: 0.82rem;
+  z-index: 6;
+}
+
+.voice-hub .voice-footer--reconnect {
+  position: relative;
+  bottom: auto;
+  flex-shrink: 0;
+}
+
+.voice-footer-reconnect-msg {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+}
+
+.voice-footer-reconnect-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.voice-footer-reconnect-btn {
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: none;
+  background: var(--sf-orange, #dd6b20);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.voice-footer-reconnect-btn:hover {
+  opacity: 0.95;
+}
+
+.voice-footer-reconnect-btn--secondary {
+  background: transparent;
+  border: 1px solid rgba(255, 236, 179, 0.65);
+  color: #ffecb3;
+}

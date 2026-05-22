@@ -1,14 +1,23 @@
 import { useCallback } from 'react';
 import { bindDailyAudioFallback, getVapiAudioDiagnostics, syncVapiRemoteAudio } from '../lib/vapiAudio';
+import { preflightMicrophoneAccess } from '../lib/vapiMic';
+import { bumpVapiCallEpoch } from '../lib/vapiCallEpoch';
 import { getSharedVapi, getVapiInstance } from '../lib/vapiClient';
+import { getVapiCallLifecycle, setVapiCallLifecycle } from '../lib/vapiCallLifecycle';
+import { withSuppressedCallEndTeardown } from '../lib/vapiIntentionalDisconnect';
+import { traceVapiStop } from '../lib/vapiStopTrace';
+import { resetGoodbyeFinalizeState } from '../lib/sessionLifecycle';
+import { logVoiceDebugLifecycle, logVoiceDebugVapi } from '../lib/voiceDebugLog';
+import { resetClientToolDedupe } from '../lib/clientToolDedupe';
 import { resetVapiTranscriptDedupe } from '../lib/vapiListeners';
+import { beginGracefulSessionEnd, resetSessionEndFlow, voiceFailureEndMessage } from '../lib/sessionEndSync';
 import {
   getVapiAssistantId,
   getVapiPublicKey,
   isVapiConfigured,
   vapiEnvInvalidReason,
 } from '../lib/vapiEnv';
-import { VAPI_TOOL_DEFINITIONS } from '../lib/vapiTools';
+import { buildVapiStartOverrides } from '../lib/vapiCallOverrides';
 import { useSessionStore } from '../store/sessionStore';
 import { PHASE_HEADINGS, type SessionPhase } from '../types/session';
 
@@ -24,54 +33,125 @@ export function useVapi() {
     const publicKey = getVapiPublicKey();
     const assistantId = getVapiAssistantId();
     if (!publicKey || !assistantId) {
-      const store = useSessionStore.getState();
       const hint =
         vapiEnvInvalidReason ??
         'Missing VITE_VAPI_PUBLIC_KEY or VITE_VAPI_ASSISTANT_ID (set in Vercel and redeploy).';
-      store.setVapiCallStatus('error', hint);
-      store.addTranscript('system', `Voice error: ${hint}`);
+      if (useSessionStore.getState().screen !== 'home') {
+        beginGracefulSessionEnd(voiceFailureEndMessage(hint));
+      }
       return;
     }
 
     const store = useSessionStore.getState();
+    resetGoodbyeFinalizeState();
+    resetSessionEndFlow();
+    resetVapiTranscriptDedupe();
+    resetClientToolDedupe();
+
+    const existing = getVapiInstance();
+    const lifecycle = getVapiCallLifecycle();
+    if (existing && (lifecycle === 'connecting' || lifecycle === 'connected')) {
+      logVoiceDebugVapi('stopping prior in-flight call before new start', { lifecycle });
+      await withSuppressedCallEndTeardown(async () => {
+        traceVapiStop('startCall:replace prior call');
+        try {
+          await existing.stop();
+        } catch {
+          /* prior call may already be stopped */
+        }
+      });
+    }
+
+    /** After intentional stop so its `call-end` cannot match this epoch. */
+    const epoch = bumpVapiCallEpoch();
+    setVapiCallLifecycle('connecting');
     store.setVapiCallStatus('connecting');
     store.setVoiceUi('thinking');
-    resetVapiTranscriptDedupe();
+    const micPreflightPromise = preflightMicrophoneAccess();
+
+    logVoiceDebugVapi('startCall', { epoch, assistantIdPrefix: assistantId.slice(0, 8) });
 
     const vapi = getSharedVapi(publicKey);
+    const overrides = buildVapiStartOverrides(store.phase, PHASE_HEADINGS[store.phase]);
 
     try {
       // Client-side tools (no server URL) — injected here because Vapi's Tools Library
       // targets backend integrations; deprecated "Custom Functions" matched our POC needs.
-      const call = await vapi.start(assistantId, {
-        variableValues: {
-          participantName: 'Nina',
-          phase: store.phase,
-          phaseHeading: PHASE_HEADINGS[store.phase],
-        },
-        'tools:append': [...VAPI_TOOL_DEFINITIONS],
-      });
+      let callPromise = vapi.start(assistantId, overrides);
+      const micPreflight = await micPreflightPromise;
+      if (!micPreflight.ok) {
+        setVapiCallLifecycle('idle');
+        await withSuppressedCallEndTeardown(async () => {
+          try {
+            await vapi.stop();
+          } catch {
+            /* ignore */
+          }
+        });
+        beginGracefulSessionEnd(
+          "Microphone access is required. Allow the mic for this site in your browser, then try again.",
+        );
+        return;
+      }
+      let call = await callPromise;
 
       if (!call) {
-        store.setVapiCallStatus('error', 'Vapi returned no call — check assistant ID and publish status');
-        store.setVoiceUi('listening');
-        store.addTranscript('system', 'Voice error: call did not start. Check Eden is published in Vapi.');
+        logVoiceDebugVapi('start returned null — retrying without overrides', {}, 'warn');
+        await withSuppressedCallEndTeardown(async () => {
+          traceVapiStop('startCall:null result retry');
+          try {
+            await vapi.stop();
+          } catch {
+            /* ignore */
+          }
+        });
+        call = await vapi.start(assistantId);
+      }
+
+      if (!call) {
+        setVapiCallLifecycle('idle');
+        beginGracefulSessionEnd(
+          voiceFailureEndMessage('Vapi returned no call — check assistant ID and publish status'),
+        );
         return;
       }
 
       bindDailyAudioFallback(vapi);
-      void syncVapiRemoteAudio(vapi);
-      window.setTimeout(() => void syncVapiRemoteAudio(vapi), 600);
+      window.setTimeout(() => void syncVapiRemoteAudio(vapi), 250);
     } catch (e) {
-      const msg = e instanceof Error ? e.message : String(e);
-      console.error('Vapi start failed', e);
-      store.setVapiCallStatus('error', msg);
-      store.setVoiceUi('listening');
-      store.addTranscript('system', `Voice error: ${msg}`);
+      console.error('Vapi start failed (with overrides)', e);
+      logVoiceDebugVapi(
+        'start failed with overrides — retrying minimal',
+        { error: e instanceof Error ? { message: e.message, stack: e.stack } : e },
+        'warn',
+      );
+      try {
+        await withSuppressedCallEndTeardown(async () => {
+          traceVapiStop('startCall:catch retry after failed overrides');
+          try {
+            await vapi.stop();
+          } catch {
+            /* ignore */
+          }
+        });
+        const call = await vapi.start(assistantId);
+        if (!call) throw e;
+        bindDailyAudioFallback(vapi);
+        window.setTimeout(() => void syncVapiRemoteAudio(vapi), 250);
+        logVoiceDebugVapi('start succeeded with minimal overrides (dashboard assistant only)', {}, 'warn');
+      } catch (e2) {
+        console.error('Vapi start failed (minimal)', e2);
+        setVapiCallLifecycle('idle');
+        logVoiceDebugLifecycle('startCall failed (minimal retry too)', {
+          error: e2 instanceof Error ? e2.message : String(e2),
+        });
+        beginGracefulSessionEnd(voiceFailureEndMessage(e2));
+      }
     }
   }, [setVapiCallStatus]);
 
   const stopCall = useCallback(() => {
+    traceVapiStop('stopCall()');
     void getVapiInstance()?.stop();
     useSessionStore.getState().setVapiCallStatus('idle');
   }, [setVapiCallStatus]);

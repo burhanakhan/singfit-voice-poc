@@ -1,5 +1,12 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
 import { songAudioUrl } from '../../data/songs';
+import { usePlayerPlaybackGate } from '../../hooks/usePlayerPlaybackGate';
+import {
+  attachPlayerAudio,
+  resumePlayerAudioContext,
+  setPlayerLinearGain,
+} from '../../lib/playerAudioEngine';
+import { edenSpeechActiveFromVapi } from '../../lib/voiceUiSync';
 import { useSessionStore } from '../../store/sessionStore';
 import { VoiceFooter } from '../voice/VoiceFooter';
 import { PlayerAsset } from './PlayerAsset';
@@ -12,34 +19,53 @@ import {
 } from './PlayerTransportIcons';
 import {
   DEFAULT_MIX,
+  EDEN_DUCK_MULTIPLIER,
   formatPlayerTime,
   mixToPlaybackRate,
-  mixToVolume,
+  mixToLinearGain,
   type MixLevels,
 } from './playerMix';
 import './PlayerScreen.css';
 
 export function PlayerScreen() {
   const audioRef = useRef<HTMLAudioElement>(null);
-  const [playing, setPlaying] = useState(true);
+  const [playing, setPlaying] = useState(false);
   const [mix, setMix] = useState<MixLevels>(DEFAULT_MIX);
   const [highKey, setHighKey] = useState(true);
   const [liked, setLiked] = useState<'up' | 'down' | null>(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
 
-  const { currentSong, onSongEnded, goBackToMusicChoice, voiceUi, vapiConnected } =
-    useSessionStore();
+  const {
+    currentSong,
+    onSongEnded,
+    goBackToMusicChoice,
+    voiceUi,
+    vapiConnected,
+    playerAudioPaused,
+    phase,
+  } = useSessionStore();
+
+  usePlayerPlaybackGate(audioRef, currentSong?.id, onSongEnded);
+
+  useEffect(() => {
+    const el = audioRef.current;
+    if (!el) return;
+    attachPlayerAudio(el);
+  }, []);
 
   const applyMixToAudio = useCallback(() => {
     const el = audioRef.current;
     if (!el) return;
-    const base = mixToVolume(mix);
-    const duck =
-      vapiConnected && (voiceUi === 'speaking' || voiceUi === 'thinking');
-    el.volume = duck ? base * 0.28 : base;
+    const base = mixToLinearGain(mix);
+    const edenTalking =
+      vapiConnected &&
+      (phase === 'playing'
+        ? edenSpeechActiveFromVapi()
+        : voiceUi === 'speaking' || voiceUi === 'thinking');
+    setPlayerLinearGain(el, edenTalking ? base * EDEN_DUCK_MULTIPLIER : base);
     el.playbackRate = mixToPlaybackRate(mix, highKey);
-  }, [mix, highKey, voiceUi, vapiConnected]);
+  }, [mix, highKey, voiceUi, vapiConnected, phase]);
 
   useEffect(() => {
     applyMixToAudio();
@@ -61,28 +87,39 @@ export function PlayerScreen() {
   useEffect(() => {
     const el = audioRef.current;
     if (!el || !currentSong) return;
+    el.pause();
+    attachPlayerAudio(el);
     el.src = songAudioUrl(currentSong);
     setCurrentTime(0);
     setDuration(0);
-    void el.play().catch((err: DOMException) => {
-      if (err.name !== 'AbortError') setPlaying(false);
-    });
+    setPlaying(false);
 
     const onTimeUpdate = () => setCurrentTime(el.currentTime);
     const onLoaded = () => setDuration(el.duration || 0);
-    const onEnd = () => onSongEnded();
 
     el.addEventListener('timeupdate', onTimeUpdate);
     el.addEventListener('loadedmetadata', onLoaded);
     el.addEventListener('durationchange', onLoaded);
-    el.addEventListener('ended', onEnd);
     return () => {
       el.removeEventListener('timeupdate', onTimeUpdate);
       el.removeEventListener('loadedmetadata', onLoaded);
       el.removeEventListener('durationchange', onLoaded);
-      el.removeEventListener('ended', onEnd);
     };
-  }, [currentSong, onSongEnded]);
+  }, [currentSong]);
+
+  useEffect(() => {
+    const el = audioRef.current;
+    if (!el || !currentSong) return;
+    if (playerAudioPaused) {
+      el.pause();
+      return;
+    }
+    if (el.paused) {
+      void resumePlayerAudioContext()
+        .then(() => el.play())
+        .catch(() => undefined);
+    }
+  }, [playerAudioPaused, currentSong]);
 
   const updateMix = (key: keyof MixLevels, value: number) => {
     setMix((prev) => ({ ...prev, [key]: value }));
@@ -94,7 +131,7 @@ export function PlayerScreen() {
     const el = audioRef.current;
     if (!el) return;
     if (el.paused) {
-      void el.play();
+      void resumePlayerAudioContext().then(() => el.play());
     } else {
       el.pause();
     }
@@ -228,7 +265,7 @@ export function PlayerScreen() {
         </button>
       </div>
 
-      <audio ref={audioRef} />
+      <audio ref={audioRef} preload="auto" />
       <VoiceFooter />
     </div>
   );

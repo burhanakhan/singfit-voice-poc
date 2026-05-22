@@ -1,0 +1,143 @@
+.session-end-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(26, 18, 12, 0.72);
+  backdrop-filter: blur(6px);
+  animation: session-end-fade-in 0.35s ease-out;
+}
+
+.session-end-overlay__card {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: 28px 20px 24px;
+  border-radius: 20px;
+  background: linear-gradient(165deg, #fffaf5 0%, #f5ebe0 48%, #efe2d4 100%);
+  box-shadow:
+    0 24px 48px rgba(0, 0, 0, 0.28),
+    0 0 0 1px rgba(104, 46, 36, 0.08);
+  text-align: center;
+  color: var(--sf-brown, #682e24);
+  animation: session-end-card-in 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.session-end-overlay__icon {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.session-end-overlay__icon-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid var(--sf-teal, #2d8a7e);
+  opacity: 0.35;
+  animation: session-end-pulse 2s ease-in-out infinite;
+}
+
+.session-end-overlay__icon-mark {
+  position: relative;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--sf-teal, #2d8a7e);
+  line-height: 1;
+}
+
+.session-end-overlay__title {
+  margin: 0 0 10px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.session-end-overlay__message {
+  margin: 0 0 18px;
+  font-size: 0.92rem;
+  line-height: 1.45;
+  color: rgba(104, 46, 36, 0.88);
+  text-wrap: pretty;
+  hyphens: none;
+}
+
+.session-end-overlay__countdown {
+  margin: 0 0 14px;
+  font-size: 0.85rem;
+  color: rgba(104, 46, 36, 0.65);
+}
+
+.session-end-overlay__countdown strong {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--sf-teal, #2d8a7e);
+}
+
+.session-end-overlay__progress {
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(45, 138, 126, 0.15);
+  overflow: hidden;
+}
+
+.session-end-overlay__progress-fill {
+  display: block;
+  height: 100%;
+  width: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--sf-teal, #2d8a7e), #5cb8a8);
+  transform-origin: left center;
+  transform: scaleX(0);
+  animation-name: session-end-progress;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+@keyframes session-end-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes session-end-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes session-end-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.35;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.55;
+  }
+}
+
+@keyframes session-end-progress {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}

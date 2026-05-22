@@ -1,0 +1,114 @@
+.dev-session-tools {
+  margin: 0;
+}
+
+.dev-session-tools__title {
+  margin: 0 0 10px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #333;
+}
+
+.dev-session-tools__idle {
+  margin: 0 0 12px;
+  font-size: 0.75rem;
+  color: #666;
+}
+
+.dev-help {
+  margin: 0 0 10px;
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.dev-help--nested {
+  margin-bottom: 10px;
+  background: #fafafa;
+}
+
+.dev-help summary {
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #444;
+}
+
+.dev-help__body {
+  margin-top: 8px;
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: #555;
+}
+
+.dev-help__body p {
+  margin: 0 0 8px;
+}
+
+.dev-help__body p:last-child {
+  margin-bottom: 0;
+}
+
+.dev-help code {
+  font-size: 0.68rem;
+  background: rgba(0, 0, 0, 0.06);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+.dev-section {
+  margin: 0 0 10px;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.dev-section summary {
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #222;
+}
+
+.dev-section__body {
+  margin-top: 10px;
+}
+
+.dev-section__hint {
+  margin: 0 0 8px;
+  font-size: 0.7rem;
+  color: #666;
+}
+
+.dev-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.dev-grid--end {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.dev-grid button,
+.dev-grid__btn {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: #fff;
+  color: #222;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+}
+
+.dev-grid button:hover,
+.dev-grid__btn:hover {
+  background: #f4f6ff;
+  border-color: #a8b8ff;
+}

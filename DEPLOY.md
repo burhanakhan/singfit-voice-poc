@@ -87,7 +87,9 @@ Redeploy after adding env: `vercel --prod`
 
 ## 4. Without Vapi keys (UI only)
 
-The app runs in **tap-through mode**: all screens and MP3 playback work. Add `?debug=true` for flow controls and a dev banner about Vapi keys.
+The app runs in **tap-through mode**: all screens and MP3 playback work.
+
+To enable the **dev panel** (flow controls, Vapi key reminder, voice debug stream), add `VITE_DEBUG_SECRET` to env (random string, **12+ characters** — see `.env.example`), redeploy, then append `?sfdbg=` + that secret to the URL. **Do not paste** URLs with `sfdbg` when sharing demos; rotate the secret in Vercel if one leaks.
 
 ---
 

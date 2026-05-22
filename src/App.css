@@ -1,16 +1,27 @@
 .app-desktop {
+  --app-column-width: var(--phone-width);
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
   justify-content: center;
   gap: 28px;
   width: 100%;
+  margin-inline: auto;
+}
+
+/* Side-by-side with phone when viewport is wide enough */
+@media (min-width: 860px) {
+  .app-desktop {
+    flex-wrap: nowrap;
+    max-width: calc(var(--app-column-width) * 2 + 28px);
+  }
 }
 
 .app-phone {
   position: relative;
-  width: 100%;
-  max-width: var(--phone-width);
+  flex: 0 0 var(--app-column-width);
+  width: var(--app-column-width);
+  max-width: 100%;
   height: calc(100dvh - 40px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
   max-height: 900px;
   min-height: min(640px, calc(100dvh - 40px));
